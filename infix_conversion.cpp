@@ -8,11 +8,6 @@
 
 using namespace std;
 
-/**
- * @brief Determines the precedence of a mathematical operator.
- * @param op The operator character.
- * @return An integer representing the precedence level. Higher is more important.
- */
 int operatorPrecedence(char op) {
     unordered_map<char, int> opMap;
     opMap['^'] = 3;
