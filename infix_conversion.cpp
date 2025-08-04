@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <cmath> // For pow()
 #include <cctype> // For isdigit()
+#include <algorithm>
 
 using namespace std;
 
@@ -115,26 +116,76 @@ double evaluateReversePolish(string postfix) {
 
         // If the token is a digit, parse the full number
         if (isdigit(token)) {
-            string number_str;
+            string number;
             while (i < postfix.length() && isdigit(postfix[i])) {
-                number_str.push_back(postfix[i]);
+                number.push_back(postfix[i]);
                 i++;
             }
             // i is now at the space after the number, loop will increment past it
-            stk.push(stod(number_str)); // stod converts string to double
+            stk.push(stod(number)); // stod converts string to double
         }
         else if (string("+-*/^").find(token) != string::npos) {
             // Pop the two operands from the stack
             double firstPop = stk.top(); stk.pop();
             double secondPop = stk.top(); stk.pop();
-
             // Perform operation and push result back onto stack
-            double res = getOperationResult(token, firstPop, secondPop);
+            double res = getOperationResult(token, secondPop, firstPop);
             stk.push(res);
         }
         // we ignore spaces
     }
+
+    if (stk.size() > 1) {
+        cout << "Invalid format found. Try again" << endl;
+        return INT_MIN;
+    }
+
     // The final result is the last item on the stack
+    return stk.top();
+}
+
+string getPolishExpression(const string& infix) {
+    string prefix = infix;
+
+    for (int i = 0; i < infix.length(); i++) {
+        if (prefix[i] == '(') prefix[i] = ')';
+        else if (prefix[i] == ')') prefix[i] = '(';
+    }
+    reverse(prefix.begin(), prefix.end());
+    prefix = getReversePolish(prefix);
+    reverse(prefix.begin(), prefix.end());
+    return prefix;
+}
+
+double evaluatePolishExpression(const string& prefix) {
+    stack<double> stk;
+
+    for (int i = prefix.length() - 1; i >= 0; i--) {
+        char token = prefix[i];
+        if (isdigit(token)) {
+            string number;
+            while (i >= 0 && isdigit(prefix[i])) {
+                number.push_back(prefix[i]);
+                i--;
+            }
+            // we have definitely encountered a space here - since we added spaces explicitly in our prefix expression
+            // therefore, it's safe to not decrement i
+            reverse(number.begin(), number.end()); // single we are parsing right to left
+            stk.push(stod(number));
+        }
+        else if (string("+*-/^").find(token) != string::npos) {
+            double firstPop = stk.top(); stk.pop();
+            double secondPop = stk.top(); stk.pop();
+            stk.push(getOperationResult(token, firstPop, secondPop));
+        }
+        // ignore the spaces
+    }
+
+    if (stk.size() > 1) {
+        cout << "Invalid format found. Try again" << endl;
+        return INT_MIN;
+    }
+
     return stk.top();
 }
 
@@ -144,15 +195,36 @@ int main() {
     cout << "Enter an infix expression: " << endl;
     getline(cin, infix); // getline reads the entire line including spaces
 
-    string postfix = getReversePolish(infix);
-    if (postfix.empty()) {
-        cout << "Invalid format found. Try again" << endl;
-        return 0;
+    cout << "Enter one of the following options (1/2)" << endl;
+    cout << "1. Convert to Polish Notation and evaluate" << endl;
+    cout << "2. Convert to Reverse Polish Notation and evaluate" << endl;
+    char option;
+    cin >> option;
+    double result;
+
+    if (option == '1') {
+        string prefix = getPolishExpression(infix);
+        if (prefix.empty()) {
+            cout << "Invalid format found. Try again" << endl;
+            return 0;
+        }
+        cout << "Polish Notation expression: " << prefix << endl;
+        result = evaluatePolishExpression(prefix);
+        cout << "Result from Polish Notation expression: " << result << endl;
     }
-    cout << "Postfix expression: " << postfix << endl;
+    else if (option == '2') {
+        string postfix = getReversePolish(infix);
+        if (postfix.empty()) {
+            cout << "Invalid format found. Try again" << endl;
+            return 0;
+        }
+        cout << "Reverse Polish Notation expression: " << postfix << endl;
 
-    double result = evaluateReversePolish(postfix);
-    cout << "Result: " << result << endl;
-
+        result = evaluateReversePolish(postfix);
+        cout << "Result from Reverse Polish Notation: " << result << endl;
+    }
+    else {
+        cout << "Invalid option. Try again" << endl;
+    }
     return 0;
 }
