@@ -1,0 +1,33 @@
+# Windows system files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# GitIgnore this on Windows
+*.log
+
+# Build artifacts
+*.exe
+*.o
+*.obj
+*.dll
+*.lib
+*.out
+
+# Temporary files
+*.tmp
+*.bak
+
+# Visual Studio Code settings
+.vscode/
+
+# CMake or build folders (if you ever use them)
+build/
+CMakeFiles/
+CMakeCache.txt
+Makefile
+cmake_install.cmake
+
+# Ignore compiled debug/release folders (if any)
+Debug/
+Release/
