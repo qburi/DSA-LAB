@@ -31,3 +31,6 @@ cmake_install.cmake
 # Ignore compiled debug/release folders (if any)
 Debug/
 Release/
+
+
+.idea/
