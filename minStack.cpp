@@ -54,11 +54,9 @@ public:
             return INT_MAX;
         }
 
-        // Use a temporary stack instead of an array
         Stack tempStack(SIZE);
         int minElement = this->peek();
 
-        // 1. Empty the main stack into the temp stack and find the minimum
         while (!this->isEmpty()) {
             int element = this->peek();
             minElement = min(minElement, element);
@@ -66,7 +64,7 @@ public:
             this->pop();
         }
 
-        // 2. Restore the original stack from the temp stack
+        // build original stack
         while (!tempStack.isEmpty()) {
             this->push(tempStack.peek());
             tempStack.pop();
@@ -83,8 +81,11 @@ int main() {
     stk->push(3);
     stk->push(-1);
     stk->push(100);
+    stk->push(0);
     stk->pop();
+    stk->push(10);
     cout << "Stack top: " << stk->peek() << endl;
     cout << "Minimum Element: " << stk->getMin() << endl;
+    delete stk;
     return 0;
 }
