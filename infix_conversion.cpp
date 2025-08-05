@@ -219,7 +219,8 @@ string getPolishExpression(const string& infix) {
         else if (prefix[i] == ')') prefix[i] = '(';
     }
     reverse(prefix.begin(), prefix.end());
-    prefix = getReversePolishForPolish(prefix);
+    prefix = getReversePolishForPolish(prefix); // the only difference from the original function is that we remove
+                                                // the right associativity of ^ for reversing.
     reverse(prefix.begin(), prefix.end());
     return prefix;
 }
