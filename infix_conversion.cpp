@@ -29,6 +29,9 @@ string getReversePolish(const string& infix) {
     for (int i = 0; i < infix.length(); i++) {
         char token = infix[i];
 
+        // skip spaces
+        if (isspace(token)) continue;
+
         if (isdigit(token)) {
             string number;
             while (i < infix.length() && isdigit(infix[i])) {
@@ -63,8 +66,13 @@ string getReversePolish(const string& infix) {
             while (
                 ! stk.empty() &&
                 stk.top() != '(' &&
-                operatorPrecedence(stk.top()) >= operatorPrecedence(token)
-                ) {
+                (
+                    // Pop if operator on stack has higher precedence
+                    operatorPrecedence(stk.top()) > operatorPrecedence(token) ||
+                    // OR if they have equal precedence AND the token is left-associative
+                    (operatorPrecedence(stk.top()) == operatorPrecedence(token) && token != '^')
+                )
+                ){
                 postFix.push_back(stk.top());
                 postFix.push_back(' '); // add delimiter
                 stk.pop();
@@ -139,6 +147,70 @@ double evaluateReversePolish(string postfix) {
     return stk.top();
 }
 
+string getReversePolishForPolish(const string& infix) {
+    string postFix;
+    stack<char> stk;
+
+    for (int i = 0; i < infix.length(); i++) {
+        char token = infix[i];
+
+        // skip spaces
+        if (isspace(token)) continue;
+
+        if (isdigit(token)) {
+            string number;
+            while (i < infix.length() && isdigit(infix[i])) {
+                number.push_back(infix[i]);
+                i++;
+            }
+
+            // We currently don't know how infix[i] should be handled. If we don't decrement it, we will skip infix[i]
+            i--; // Decrement i to offset the for-loop's increment
+
+            postFix.append(number);
+            postFix.push_back(' '); // Add space delimiter after the number
+        }
+        else if (token == '(') {
+            stk.push(token);
+        }
+        else if (token == ')') {
+            while (!stk.empty() && stk.top() != '(') {
+                postFix.push_back(stk.top());
+                postFix.push_back(' ');
+                stk.pop();
+            }
+            if (!stk.empty()) {
+                stk.pop(); // Pop the opening parenthesis '('
+            }
+            else {
+                cerr << "Mismatched parenthesis found" << endl;
+                return ""; // we will handle this case in main function
+            }
+        }
+        else if (string("+-*/^").find(token) != string::npos) {
+            while (
+                ! stk.empty() &&
+                stk.top() != '(' &&
+                operatorPrecedence(stk.top()) >= operatorPrecedence(token)
+                ){
+                postFix.push_back(stk.top());
+                postFix.push_back(' '); // add delimiter
+                stk.pop();
+            }
+            stk.push(token);
+        }
+    }
+
+    // Pop any remaining operators from the stack to the output string
+    while (!stk.empty()) {
+        postFix.push_back(stk.top());
+        postFix.push_back(' ');
+        stk.pop();
+    }
+
+    return postFix;
+}
+
 string getPolishExpression(const string& infix) {
     string prefix = infix;
 
@@ -147,7 +219,7 @@ string getPolishExpression(const string& infix) {
         else if (prefix[i] == ')') prefix[i] = '(';
     }
     reverse(prefix.begin(), prefix.end());
-    prefix = getReversePolish(prefix);
+    prefix = getReversePolishForPolish(prefix);
     reverse(prefix.begin(), prefix.end());
     return prefix;
 }

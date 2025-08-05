@@ -39,22 +39,33 @@ public:
     }
 };
 
+// --- Test Case 5: Emptying Stacks Completely ---
+// This test involves navigating and then using the back button until the
+// original page is reached and the back stack is empty.
 int main() {
-    Browser browser("google.com");
+    cout << "--- Test Case 5: Emptying Stacks Completely ---" << endl;
+    Browser browser("Start.com");
+    browser.goToPage("Middle.com");
+    browser.goToPage("End.com");
 
-    browser.goToPage("bing.com");
-    browser.goToPage("youtube.com");
-    browser.goToPage("vtop.vit.ac.in");
+    cout << "Current Page: " << browser.getCurrentPage() << endl; // End.com
 
-    std::cout << browser.getCurrentPage() << "\n";
-    browser.moveBackToPage();
-    std::cout << browser.getCurrentPage() << "\n";
-    browser.moveBackToPage();
-    std::cout << browser.getCurrentPage() << "\n";
-    browser.moveForwardToPage();
-    std::cout << browser.getCurrentPage() << "\n";
-    browser.goToPage("web.whatsapp.com");
-    std::cout << browser.getCurrentPage() << "\n";
-    browser.moveForwardToPage(); // No effect
+    cout << "Moving all the way back..." << endl;
+    browser.moveBackToPage(); // -> Middle.com
+    cout << "Current Page: " << browser.getCurrentPage() << endl;
+    browser.moveBackToPage(); // -> Start.com
+    cout << "Current Page: " << browser.getCurrentPage() << endl;
+
+    // Back stack should now be empty.
+    browser.moveBackToPage(); // Should print "Back Stack is empty."
+
+    cout << "Moving all the way forward..." << endl;
+    browser.moveForwardToPage(); // -> Middle.com
+    cout << "Current Page: " << browser.getCurrentPage() << endl;
+    browser.moveForwardToPage(); // -> End.com
+    cout << "Current Page: " << browser.getCurrentPage() << endl;
+
+    // Forward stack should now be empty.
+    browser.moveForwardToPage(); // Should print "Forward Stack is empty."
     return 0;
 }
