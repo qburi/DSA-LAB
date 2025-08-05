@@ -56,4 +56,5 @@ int main() {
     browser.goToPage("web.whatsapp.com");
     std::cout << browser.getCurrentPage() << "\n";
     browser.moveForwardToPage(); // No effect
+    return 0;
 }
