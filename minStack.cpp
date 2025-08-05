@@ -31,7 +31,7 @@ public:
     }
 
     int peek() {
-        if (isEmpty()) return INT_MIN;
+        if (isEmpty()) return INT_MAX;
         return stk[ptr];
     }
 
@@ -40,7 +40,7 @@ public:
     }
 
     bool isFull() {
-        return ptr == SIZE;
+        return ptr == SIZE - 1;
     }
 };
 
@@ -75,17 +75,27 @@ public:
 };
 
 
+// --- Test Case 5: Interleaved Operations ---
+// This test simulates more complex usage by mixing push, pop, and getMin calls
+// to ensure the stack state remains consistent.
 int main() {
-    MinStack* stk = new MinStack(6);
+    cout << "--- Test Case 5: Interleaved Operations ---" << endl;
+    MinStack* stk = new MinStack(8);
     stk->push(2);
-    stk->push(3);
-    stk->push(-1);
-    stk->push(100);
     stk->push(0);
-    stk->pop();
-    stk->push(10);
-    cout << "Stack top: " << stk->peek() << endl;
-    cout << "Minimum Element: " << stk->getMin() << endl;
+    stk->push(3);
+    stk->push(0);
+    cout << "Minimum is: " << stk->getMin() << endl; // Should be 0
+    stk->pop(); // Removes a 0
+    cout << "Popped. Top is now: " << stk->peek() << endl; // Should be 3
+    cout << "Minimum is: " << stk->getMin() << endl; // Should still be 0
+    stk->pop(); // Removes 3
+    cout << "Popped. Top is now: " << stk->peek() << endl; // Should be 0
+    cout << "Minimum is: " << stk->getMin() << endl; // Should still be 0
+    stk->pop(); // Removes the last 0
+    cout << "Popped. Top is now: " << stk->peek() << endl; // Should be 2
+    cout << "Minimum is: " << stk->getMin() << endl; // Should now be 2
+
     delete stk;
     return 0;
 }
