@@ -39,7 +39,7 @@ public:
     }
 
     A peek() {
-        if (isEmpty()) return string();
+        if (isEmpty()) return A();
         return stk[ptr];
     }
 

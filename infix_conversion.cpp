@@ -8,6 +8,61 @@
 
 using namespace std;
 
+template <typename A>
+class Stack {
+public:
+    int SIZE;
+    A* stk;
+    int ptr = -1;
+
+    Stack(int n) {
+        SIZE = n;
+        stk = new A[SIZE];
+    }
+
+    Stack () {
+        SIZE = 1000;
+        stk = new A[SIZE];
+        ptr = -1;
+    }
+
+    ~Stack() {
+        delete[] stk;
+    }
+
+    void push(A x) {
+        if (isFull()) {
+            cout << "Stack Overflow" << endl;
+        } else {
+            stk[++ptr] = x;
+        }
+    }
+
+    void pop() {
+        if (isEmpty()) cout << "Underflow" << endl;
+        else ptr--;
+    }
+
+    A peek() {
+        if (isEmpty()) return A();
+        return stk[ptr];
+    }
+
+    bool isEmpty() {
+        return ptr == -1;
+    }
+
+    bool isFull() {
+        return ptr == SIZE - 1;
+    }
+
+    int size() {
+        if (ptr == -1) return 0;
+        return ptr + 1;
+    }
+};
+
+
 int operatorPrecedence(char op) {
     unordered_map<char, int> opMap;
     opMap['^'] = 3;
@@ -24,7 +79,7 @@ int operatorPrecedence(char op) {
 
 string getReversePolish(const string& infix) {
     string postFix;
-    stack<char> stk;
+    Stack<char> stk;
 
     for (int i = 0; i < infix.length(); i++) {
         char token = infix[i];
@@ -49,12 +104,12 @@ string getReversePolish(const string& infix) {
             stk.push(token);
         }
         else if (token == ')') {
-            while (!stk.empty() && stk.top() != '(') {
-                postFix.push_back(stk.top());
+            while (!stk.isEmpty() && stk.peek() != '(') {
+                postFix.push_back(stk.peek());
                 postFix.push_back(' ');
                 stk.pop();
             }
-            if (!stk.empty()) {
+            if (!stk.isEmpty()) {
                 stk.pop(); // Pop the opening parenthesis '('
             }
             else {
@@ -64,16 +119,16 @@ string getReversePolish(const string& infix) {
         }
         else if (string("+-*/^").find(token) != string::npos) {
             while (
-                ! stk.empty() &&
-                stk.top() != '(' &&
+                ! stk.isEmpty() &&
+                stk.peek() != '(' &&
                 (
                     // Pop if operator on stack has higher precedence
-                    operatorPrecedence(stk.top()) > operatorPrecedence(token) ||
+                    operatorPrecedence(stk.peek()) > operatorPrecedence(token) ||
                     // OR if they have equal precedence AND the token is left-associative
-                    (operatorPrecedence(stk.top()) == operatorPrecedence(token) && token != '^')
+                    (operatorPrecedence(stk.peek()) == operatorPrecedence(token) && token != '^')
                 )
                 ){
-                postFix.push_back(stk.top());
+                postFix.push_back(stk.peek());
                 postFix.push_back(' '); // add delimiter
                 stk.pop();
             }
@@ -82,8 +137,8 @@ string getReversePolish(const string& infix) {
     }
 
     // Pop any remaining operators from the stack to the output string
-    while (!stk.empty()) {
-        postFix.push_back(stk.top());
+    while (!stk.isEmpty()) {
+        postFix.push_back(stk.peek());
         postFix.push_back(' ');
         stk.pop();
     }
@@ -112,7 +167,7 @@ double getOperationResult(char op, double first, double second) {
 }
 
 double evaluateReversePolish(string postfix) {
-    stack<double> stk;
+    Stack<double> stk;
 
     for (int i = 0; i < postfix.length(); ++i) {
         char token = postfix[i];
@@ -129,8 +184,8 @@ double evaluateReversePolish(string postfix) {
         }
         else if (string("+-*/^").find(token) != string::npos) {
             // Pop the two operands from the stack
-            double firstPop = stk.top(); stk.pop();
-            double secondPop = stk.top(); stk.pop();
+            double firstPop = stk.peek(); stk.pop();
+            double secondPop = stk.peek(); stk.pop();
             // Perform operation and push result back onto stack
             double res = getOperationResult(token, secondPop, firstPop);
             stk.push(res);
@@ -144,12 +199,12 @@ double evaluateReversePolish(string postfix) {
     }
 
     // The final result is the last item on the stack
-    return stk.top();
+    return stk.peek();
 }
 
 string getReversePolishForPolish(const string& infix) {
     string postFix;
-    stack<char> stk;
+    Stack<char> stk;
 
     for (int i = 0; i < infix.length(); i++) {
         char token = infix[i];
@@ -174,12 +229,12 @@ string getReversePolishForPolish(const string& infix) {
             stk.push(token);
         }
         else if (token == ')') {
-            while (!stk.empty() && stk.top() != '(') {
-                postFix.push_back(stk.top());
+            while (!stk.isEmpty() && stk.peek() != '(') {
+                postFix.push_back(stk.peek());
                 postFix.push_back(' ');
                 stk.pop();
             }
-            if (!stk.empty()) {
+            if (!stk.isEmpty()) {
                 stk.pop(); // Pop the opening parenthesis '('
             }
             else {
@@ -189,11 +244,11 @@ string getReversePolishForPolish(const string& infix) {
         }
         else if (string("+-*/^").find(token) != string::npos) {
             while (
-                ! stk.empty() &&
-                stk.top() != '(' &&
-                operatorPrecedence(stk.top()) >= operatorPrecedence(token)
+                ! stk.isEmpty() &&
+                stk.peek() != '(' &&
+                operatorPrecedence(stk.peek()) >= operatorPrecedence(token)
                 ){
-                postFix.push_back(stk.top());
+                postFix.push_back(stk.peek());
                 postFix.push_back(' '); // add delimiter
                 stk.pop();
             }
@@ -202,8 +257,8 @@ string getReversePolishForPolish(const string& infix) {
     }
 
     // Pop any remaining operators from the stack to the output string
-    while (!stk.empty()) {
-        postFix.push_back(stk.top());
+    while (!stk.isEmpty()) {
+        postFix.push_back(stk.peek());
         postFix.push_back(' ');
         stk.pop();
     }
@@ -226,7 +281,7 @@ string getPolishExpression(const string& infix) {
 }
 
 double evaluatePolishExpression(const string& prefix) {
-    stack<double> stk;
+    Stack<double> stk;
 
     for (int i = prefix.length() - 1; i >= 0; i--) {
         char token = prefix[i];
@@ -242,8 +297,8 @@ double evaluatePolishExpression(const string& prefix) {
             stk.push(stod(number));
         }
         else if (string("+*-/^").find(token) != string::npos) {
-            double firstPop = stk.top(); stk.pop();
-            double secondPop = stk.top(); stk.pop();
+            double firstPop = stk.peek(); stk.pop();
+            double secondPop = stk.peek(); stk.pop();
             stk.push(getOperationResult(token, firstPop, secondPop));
         }
         // ignore the spaces
@@ -254,7 +309,7 @@ double evaluatePolishExpression(const string& prefix) {
         return INT_MIN;
     }
 
-    return stk.top();
+    return stk.peek();
 }
 
 
