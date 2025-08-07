@@ -3,9 +3,58 @@
 using namespace std;
 
 
+template <typename A>
+class Stack {
+public:
+    int SIZE;
+    A* stk;
+    int ptr = -1;
+
+    Stack(int n) {
+        SIZE = n;
+        stk = new A[SIZE];
+    }
+
+    Stack () {
+        SIZE = 1000;
+        stk = new A[SIZE];
+        ptr = -1;
+    }
+
+    ~Stack() {
+        delete[] stk;
+    }
+
+    void push(A x) {
+        if (isFull()) {
+            cout << "Stack Overflow" << endl;
+        } else {
+            stk[++ptr] = x;
+        }
+    }
+
+    void pop() {
+        if (isEmpty()) cout << "Underflow" << endl;
+        else ptr--;
+    }
+
+    A peek() {
+        if (isEmpty()) return string();
+        return stk[ptr];
+    }
+
+    bool isEmpty() {
+        return ptr == -1;
+    }
+
+    bool isFull() {
+        return ptr == SIZE - 1;
+    }
+};
+
 class Browser {
-    stack<string> backStack;
-    stack<string> forwardStack;
+    Stack<string> backStack;
+    Stack<string> forwardStack;
     string currPage;
 public:
     Browser(string firstPage) : currPage(firstPage) {}
@@ -17,31 +66,27 @@ public:
     void goToPage(const string& page) {
         backStack.push(currPage);
         currPage = page;
-        while (! forwardStack.empty()) forwardStack.pop();
+        while (! forwardStack.isEmpty()) forwardStack.pop();
     }
 
     void moveForwardToPage() {
-        if (forwardStack.empty()) {
+        if (forwardStack.isEmpty()) {
             cout << "Forward Stack is empty. Can't move forward." << endl;
             return;
         }
         backStack.push(currPage);
-        currPage = forwardStack.top(); forwardStack.pop();
+        currPage = forwardStack.peek(); forwardStack.pop();
     }
 
     void moveBackToPage() {
-        if (backStack.empty()) {
+        if (backStack.isEmpty()) {
             cout << "Back Stack is empty. Can't move back." << endl;
             return;
         }
         forwardStack.push(currPage);
-        currPage = backStack.top(); backStack.pop();
+        currPage = backStack.peek(); backStack.pop();
     }
 };
-
-// --- Test Case 5: Emptying Stacks Completely ---
-// This test involves navigating and then using the back button until the
-// original page is reached and the back stack is empty.
 int main() {
     cout << "--- Test Case 5: Emptying Stacks Completely ---" << endl;
     Browser browser("Start.com");
@@ -69,3 +114,4 @@ int main() {
     browser.moveForwardToPage(); // Should print "Forward Stack is empty."
     return 0;
 }
+
