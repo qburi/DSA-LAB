@@ -221,11 +221,11 @@ string getReversePolishForPolish(const string& infix) {
             postFix.append(number);
             postFix.push_back(' ');
         }
-        else if (token == '(') { // Note: in the reversed string, this was originally ')'
+        else if (token == ')') { // Note: in the reversed string, this was originally ')'
             stk.push(token);
         }
-        else if (token == ')') { // Note: in the reversed string, this was originally '('
-            while (!stk.isEmpty() && stk.peek() != '(') {
+        else if (token == '(') { // Note: in the reversed string, this was originally '('
+            while (!stk.isEmpty() && stk.peek() != ')') {
                 postFix.push_back(stk.peek());
                 postFix.push_back(' ');
                 stk.pop();
@@ -242,7 +242,7 @@ string getReversePolishForPolish(const string& infix) {
             // This while loop condition is the critical change.
             while (
                 !stk.isEmpty() &&
-                stk.peek() != '(' &&
+                stk.peek() != ')' &&
                 (
                     // Pop if operator on stack has strictly higher precedence
                     operatorPrecedence(stk.peek()) > operatorPrecedence(token) ||
@@ -270,10 +270,6 @@ string getReversePolishForPolish(const string& infix) {
 string getPolishExpression(const string& infix) {
     string prefix = infix;
 
-    for (int i = 0; i < infix.length(); i++) {
-        if (prefix[i] == '(') prefix[i] = ')';
-        else if (prefix[i] == ')') prefix[i] = '(';
-    }
     reverse(prefix.begin(), prefix.end());
     prefix = getReversePolishForPolish(prefix); // the only difference from the original function is that we remove
                                                 // the right associativity of ^ for reversing.
