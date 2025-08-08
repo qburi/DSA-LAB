@@ -209,7 +209,6 @@ string getReversePolishForPolish(const string& infix) {
     for (int i = 0; i < infix.length(); i++) {
         char token = infix[i];
 
-        // skip spaces
         if (isspace(token)) continue;
 
         if (isdigit(token)) {
@@ -218,45 +217,47 @@ string getReversePolishForPolish(const string& infix) {
                 number.push_back(infix[i]);
                 i++;
             }
-
-            // We currently don't know how infix[i] should be handled. If we don't decrement it, we will skip infix[i]
-            i--; // Decrement i to offset the for-loop's increment
-
+            i--;
             postFix.append(number);
-            postFix.push_back(' '); // Add space delimiter after the number
+            postFix.push_back(' ');
         }
-        else if (token == '(') {
+        else if (token == '(') { // Note: in the reversed string, this was originally ')'
             stk.push(token);
         }
-        else if (token == ')') {
+        else if (token == ')') { // Note: in the reversed string, this was originally '('
             while (!stk.isEmpty() && stk.peek() != '(') {
                 postFix.push_back(stk.peek());
                 postFix.push_back(' ');
                 stk.pop();
             }
             if (!stk.isEmpty()) {
-                stk.pop(); // Pop the opening parenthesis '('
+                stk.pop();
             }
             else {
                 cerr << "Mismatched parenthesis found" << endl;
-                return ""; // we will handle this case in main function
+                return "";
             }
         }
         else if (string("+-*/^").find(token) != string::npos) {
+            // This while loop condition is the critical change.
             while (
-                ! stk.isEmpty() &&
+                !stk.isEmpty() &&
                 stk.peek() != '(' &&
-                operatorPrecedence(stk.peek()) >= operatorPrecedence(token)
-                ){
+                (
+                    // Pop if operator on stack has strictly higher precedence
+                    operatorPrecedence(stk.peek()) > operatorPrecedence(token) ||
+                    // OR if they have equal precedence AND the token is now LEFT-associative (i.e. '^')
+                    (operatorPrecedence(stk.peek()) == operatorPrecedence(token) && token == '^')
+                )
+            ){
                 postFix.push_back(stk.peek());
-                postFix.push_back(' '); // add delimiter
+                postFix.push_back(' ');
                 stk.pop();
             }
             stk.push(token);
         }
     }
 
-    // Pop any remaining operators from the stack to the output string
     while (!stk.isEmpty()) {
         postFix.push_back(stk.peek());
         postFix.push_back(' ');
