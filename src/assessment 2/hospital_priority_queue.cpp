@@ -60,23 +60,61 @@ public:
             tempArray[i++] = element;
             maxElement = max(maxElement, element);
         }
-        arr = tempArray;
+        for (int j = 0; j < i; j++) {
+            push(tempArray[j]);
+        }
         if (maxElement == INT_MIN) return -1;
         return maxElement;
     }
 
-    void removeLeastElement() {}
+    int getMin() {
+        int minElement = INT_MAX;
+        int* tempArray = new int[MAX_SIZE];
+        int i = 0;
+        while (!isEmpty()) {
+            int element = peek();
+            pop();
+            tempArray[i++] = element;
+            minElement = min(minElement, element);
+        }
+        for (int j = 0; j < i; j++) {
+            push(tempArray[j]);
+        }
+        if (minElement == INT_MAX) return -1;
+        return minElement;
+    }
+
+    void removeLowestPriority() {
+        // we assume the array has size: MAX_SIZE
+        // this function should only be called when the queue is full
+        int minElement = getMin();
+        int* tempArray = new int[MAX_SIZE];
+        int i = 0;
+        bool seen = false;
+        while (! isEmpty()) {
+            int element = peek();
+            pop();
+
+            if (minElement == element && ! seen) {
+                seen = true;
+                continue;
+            }
+            tempArray[i++] = element;
+        }
+        for (int j = 0; j < i; j++) push(tempArray[j]);
+    }
 
     void push(int x) {
         if (isFull()) {
             if (x > getMax()) {
-                pop(); // pop the least element not the first one
-                removeLeastElement();
-                pushWithPriority(x);
-            } else {
-                cout << "Queue is full. Can't enqueue more elements." << endl;
+                removeLowestPriority();
+                rear = (rear + 1) % MAX_SIZE;
+                arr[rear] = x;
                 return;
             }
+            cout << "Queue is full. Can't enqueue more elements." << endl;
+            return;
+
         }
         if (isEmpty()) {
             front = 0;
@@ -116,7 +154,9 @@ public:
             cout << element << " ";
         }
         cout << endl;
-        arr = tempArray;
+        for (int j = 0; j < i; j++) {
+            push(tempArray[j]);
+        }
     }
 };
 
