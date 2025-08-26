@@ -15,31 +15,8 @@ public:
         front = rear = -1;
     }
 
-    void sort(int* t, int SIZE) {
-        for (int i = 1; i < SIZE; i++) {
-            int temp = t[i];
-            int j = i - 1;
-            while (j >= 0 && t[j] > temp) {
-                t[j + 1] = t[j];
-                j--;
-            }
-            t[j + 1] = temp;
-        }
-    }
-
-    void pushWithPriority(int x) {
-        int* temp = new int[MAX_SIZE];
-        int i = 0;
-        while (!isEmpty()) {
-            int val = peek();
-            pop();
-            temp[i++] = val;
-        }
-        temp[i++] = x;
-        sort(temp, i);
-        for (int j = 0; j < i; j++) {
-            push(temp[j]);
-        }
+    ~PriorityQueue() {
+        delete[] arr;
     }
 
     bool isEmpty() {
@@ -63,6 +40,8 @@ public:
         for (int j = 0; j < i; j++) {
             push(tempArray[j]);
         }
+
+        delete[] tempArray;
         if (maxElement == INT_MIN) return -1;
         return maxElement;
     }
@@ -80,6 +59,8 @@ public:
         for (int j = 0; j < i; j++) {
             push(tempArray[j]);
         }
+
+        delete[] tempArray;
         if (minElement == INT_MAX) return -1;
         return minElement;
     }
@@ -102,6 +83,7 @@ public:
             tempArray[i++] = element;
         }
         for (int j = 0; j < i; j++) push(tempArray[j]);
+        delete[] tempArray;
     }
 
     void push(int x) {
@@ -112,7 +94,7 @@ public:
                 arr[rear] = x;
                 return;
             }
-            cout << "Queue is full. Can't enqueue more elements." << endl;
+            // cout << "Queue is full. Can't enqueue more elements." << endl; // queue is full
             return;
 
         }
@@ -157,17 +139,22 @@ public:
         for (int j = 0; j < i; j++) {
             push(tempArray[j]);
         }
+        delete[] tempArray;
     }
 };
 
 int main() {
-    int n = 4;
-    // cin >> n;
-    vector<int> arr{15, 10, 30, 5, 46, 25, 8};
+    int n ;
+    cin >> n;
+    int m; // no of patieents
+    cin >> m;
+    int* arr = new int[m];
+    for (int i = 0; i < m; i++) cin >> arr[i];
     PriorityQueue* pq = new PriorityQueue(n);
-    for (int num : arr) {
-        pq->push(num);
+    for (int i = 0; i < m; i++) {
+        pq->push(arr[i]);
     }
     pq->display();
+    delete pq;
     return 0;
 }
