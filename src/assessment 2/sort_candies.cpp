@@ -84,12 +84,14 @@ int main() {
 
     countingSort(final, n + m + p);
 
+    cout << "Using Counting Sort: ";
     for (int i = 0; i < n + m + p; i++) {
         cout << final[i] << " ";
     }
     cout << endl;
 
     selectionSort(final, n + m + p);
+    cout << "Using Selection Sort: ";
     for (int i = 0; i < n + m + p; i++) {
         cout << final[i] << " ";
     }
