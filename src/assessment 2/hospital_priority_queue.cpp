@@ -148,6 +148,10 @@ int main() {
     cin >> n;
     int m; // no of patieents
     cin >> m;
+    if (n <= 1 && m <= 1) {
+        cout << -1 << endl;
+        return 0;
+    }
     int* arr = new int[m];
     for (int i = 0; i < m; i++) cin >> arr[i];
     PriorityQueue* pq = new PriorityQueue(n);
@@ -155,6 +159,7 @@ int main() {
         pq->push(arr[i]);
     }
     pq->display();
+    delete[] arr;
     delete pq;
     return 0;
 }
