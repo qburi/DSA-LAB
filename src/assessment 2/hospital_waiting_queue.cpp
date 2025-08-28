@@ -1,68 +1,133 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <string>
+#include <limits>
 
 using namespace std;
 
-template <typename T>
-class CircularQueue {
+struct Patient {
+    string name;
+    string symptom;
+    int priority; // 2 for emergency, 1 for non-emergency
+
+    // default constructor
+    Patient() : name(""), symptom(""), priority(0) {}
+
+    // parametrized constructor
+    Patient(const string& n, const string& s, int p) : name(n), symptom(s), priority(p) {}
+};
+
+class PriorityLinearQueue {
 private:
     int rear;
-    int front;
     int MAX_SIZE;
-    T* arr;
+    Patient* arr;
+
 public:
-    CircularQueue(int SIZE) {
-        arr = new T[SIZE];
+    PriorityLinearQueue(int SIZE) {
+        arr = new Patient[SIZE];
         MAX_SIZE = SIZE;
+        // In this simple linear queue, the queue is the segment from index 0 to rear.
         rear = -1;
-        front = -1;
     }
 
-    ~CircularQueue() {
+    ~PriorityLinearQueue() {
         delete[] arr;
     }
 
-    void enqueue(T n) {
-        // recollect that enqueue operation takes place at the rear position as per FIFO
+    void enqueue(const Patient& patient) {
         if (isFull()) {
-            cout << "Queue is full. Can't add more elements" << endl;
+            cout << "Queue is full. Can't add more patients." << endl;
             return;
         }
-        if (isEmpty()) {
-            front = 0;
-        }
-        rear = (rear + 1) % MAX_SIZE;
-        arr[rear] = n;
+        rear++;
+        arr[rear] = patient;
+
+        // Re-sort the entire queue
+        insertionSort();
     }
 
-    T dequeue() {
+    void insertionSort() {
+        for (int i = 1; i <= rear; i++) {
+            Patient temp = arr[i];
+            int j = i - 1;
+
+            while (j >= 0 && arr[j].priority < temp.priority) {
+                arr[j + 1] = arr[j];
+                j--;
+            }
+            arr[j + 1] = temp;
+        }
+    }
+
+    Patient dequeue() {
         if (isEmpty()) {
-            cout << "Queue is empty" << endl;
-            return T();
+            cout << "Queue is empty." << endl;
+            return Patient();
         }
-        T data = arr[front];
-        if (front == rear) {
-            // last element
-            front = -1;
-            rear = -1;
+
+        // The highest priority patient is always at the front (index 0) after sorting
+        Patient data = arr[0];
+
+        // Shift all subsequent elements one position to the left
+        for (int i = 0; i < rear; i++) {
+            arr[i] = arr[i + 1];
         }
-        else
-            front = (front + 1) % MAX_SIZE;
+
+        // Decrease the size of the queue
+        rear--;
         return data;
     }
 
     bool isEmpty() {
-        return front == -1;
+        return rear == -1;
     }
 
     bool isFull() {
-        return (rear + 1) % MAX_SIZE == front;
+        return rear == MAX_SIZE - 1;
     }
 };
 
 
-// start here
-
+void clearInputBuffer() {
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+}
 
 int main() {
+    int n;
+    cout << "Enter the number of patients: ";
+    cin >> n;
+
+    PriorityLinearQueue waitingRoom(n);
+
+    for (int i = 0; i < n; i++) {
+        string name, symptom;
+        int priority;
+
+        cout << "\nEnter patient's name: ";
+        clearInputBuffer();
+        getline(cin, name);
+        cout << "Enter symptom: ";
+        getline(cin, symptom);
+        cout << "Enter state of emergency (2 for Emergency, 1 for Non-Emergency): ";
+        cin >> priority;
+
+        Patient patient(name, symptom, priority);
+        waitingRoom.enqueue(patient);
+    }
+
+    cout << "--- Serving Patients from the Queue ---" << endl;
+    cout << "Patients will be served based on priority (Emergency cases first)." << endl;
+
+    int patientNumber = 1;
+    while (!waitingRoom.isEmpty()) {
+        Patient currentPatient = waitingRoom.dequeue();
+        cout << "\n(" << patientNumber++ << ") Now Serving:" << endl;
+        cout << "  Name: " << currentPatient.name << endl;
+        cout << "  Symptom: " << currentPatient.symptom << endl;
+        cout << "  Status: " << (currentPatient.priority == 2 ? "EMERGENCY" : "Non-Emergency") << endl;
+    }
+
+    cout << "\nAll patients in the waiting room have been served." << endl;
+
     return 0;
 }
