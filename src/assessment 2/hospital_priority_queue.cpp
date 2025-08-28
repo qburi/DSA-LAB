@@ -4,8 +4,8 @@ using namespace std;
 
 class PriorityQueue {
 public:
-    int* arr;
     int MAX_SIZE;
+    int* arr;
     int front;
     int rear;
 
