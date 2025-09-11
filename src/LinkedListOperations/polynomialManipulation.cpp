@@ -110,6 +110,19 @@ PolynomialNode* multiply(PolynomialNode* p1, PolynomialNode* p2) {
 
     return result;
 }
+
+
+int evaluatePolynomial(PolynomialNode* head, int x) {
+    int res = 0;
+
+    while (head != nullptr) {
+        res += head->coefficient * pow(x, head->exp);
+        head = head->next;
+    }
+
+    return res;
+}
+
 int main() {
     PolynomialNode* p1 = new PolynomialNode(1, 1);
     p1->next = new PolynomialNode(2, 2);
@@ -122,7 +135,7 @@ int main() {
     // PolynomialNode* addition = addTwoPolynomials(p1, p2);
     PolynomialNode* multiplication = multiply(p1, p2);
     printPolynomial(multiplication);
-
+    cout << evaluatePolynomial(multiplication, 1) << endl;
 
 
     deletePolynomial(p1);
