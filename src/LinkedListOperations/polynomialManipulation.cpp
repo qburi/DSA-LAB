@@ -30,7 +30,7 @@ void deletePolynomial(PolynomialNode*& node) {
     node = nullptr;
 }
 
-PolynomialNode* addTwoPolynomials(PolynomialNode* p1, PolynomialNode* p2) {
+PolynomialNode* add(PolynomialNode* p1, PolynomialNode* p2) {
     PolynomialNode* ans = new PolynomialNode();
     PolynomialNode* tail = ans;
 
@@ -72,6 +72,44 @@ PolynomialNode* addTwoPolynomials(PolynomialNode* p1, PolynomialNode* p2) {
     return ans->next;
 }
 
+
+PolynomialNode* subtract(PolynomialNode* p1, PolynomialNode* p2) {
+    PolynomialNode* p2Head = new PolynomialNode();
+    PolynomialNode* p2Tail = p2Head;
+    while (p2 != nullptr) {
+        p2Tail->next = new PolynomialNode(p2->coefficient * -1, p2->exp, nullptr);
+        p2Tail = p2Tail->next;
+        p2 = p2->next;
+    }
+    PolynomialNode* result = add(p1, p2Head->next);
+    deletePolynomial(p2Head);
+    return result;
+}
+
+PolynomialNode* multiplyOneTerm(PolynomialNode* p1, PolynomialNode* p2) {
+    // we perform p1 node multiplication on p2
+    PolynomialNode* result = new PolynomialNode();
+    while (p2 != nullptr) {
+        PolynomialNode* newNode = new PolynomialNode(p1->coefficient * p2->coefficient, p1->exp + p2->exp, nullptr);
+        result = add(result, newNode);
+        deletePolynomial(newNode);
+        p2 = p2->next;
+    }
+    return result;
+}
+
+PolynomialNode* multiply(PolynomialNode* p1, PolynomialNode* p2) {
+    PolynomialNode* result = new PolynomialNode(0, 0, nullptr);
+
+    while (p1 != nullptr) {
+        PolynomialNode* oneTerm = multiplyOneTerm(p1, p2);
+        result = add(result, oneTerm);
+        deletePolynomial(oneTerm);
+        p1 = p1->next;
+    }
+
+    return result;
+}
 int main() {
     PolynomialNode* p1 = new PolynomialNode(1, 1);
     p1->next = new PolynomialNode(2, 2);
@@ -79,15 +117,18 @@ int main() {
 
     PolynomialNode* p2 = new PolynomialNode(1, 1);
     p2->next = new PolynomialNode(2, 2);
-    p2->next->next = new PolynomialNode(3, 3);
+    p2->next->next = new PolynomialNode(3, 4);
 
-    PolynomialNode* addition = addTwoPolynomials(p1, p2);
-    printPolynomial(addition);
+    // PolynomialNode* addition = addTwoPolynomials(p1, p2);
+    PolynomialNode* multiplication = multiply(p1, p2);
+    printPolynomial(multiplication);
 
 
 
     deletePolynomial(p1);
     deletePolynomial(p2);
-    deletePolynomial(addition);
+    // deletePolynomial(addition);
+    // deletePolynomial(subtraction);
+    deletePolynomial(multiplication);
     return 0;
 }
