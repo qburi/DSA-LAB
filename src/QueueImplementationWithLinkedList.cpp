@@ -47,7 +47,11 @@ public:
             return T();
         }
         T elementPopped = front->val;
+        ListNode<T>* temp = front;
         front = front->next;
+        delete temp;
+
+        if (front == nullptr) rear = nullptr;
         return elementPopped;
     }
 
