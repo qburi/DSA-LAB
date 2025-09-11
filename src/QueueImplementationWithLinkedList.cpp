@@ -43,15 +43,21 @@ public:
 
     T pop() {
         if (front == nullptr) {
+            // Correctly handles popping from an empty queue.
             cout << "Cannot pop. There are no elements" << endl;
             return T();
         }
         T elementPopped = front->val;
         ListNode<T>* temp = front;
         front = front->next;
+
+        // Correctly frees the memory, preventing leaks.
         delete temp;
 
+        // The key addition: This fixes the dangling pointer bug.
+        // If the queue just became empty, it ensures 'rear' is also null.
         if (front == nullptr) rear = nullptr;
+
         return elementPopped;
     }
 
