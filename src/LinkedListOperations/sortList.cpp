@@ -49,7 +49,7 @@ ListNode* sortList(ListNode* head) {
         slow = slow->next;
         fast = fast->next->next;
     }
-    if (temp != nullptr) temp->next = nullptr; // web break the two lists
+    if (temp != nullptr) temp->next = nullptr; // we break the two lists
     ListNode* leftArray = sortList(head);
     ListNode* rightArray = sortList(slow);
     return merge(leftArray, rightArray);
