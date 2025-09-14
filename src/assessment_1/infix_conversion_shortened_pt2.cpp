@@ -1,5 +1,4 @@
 #include <bits/stdc++.h>
-#include "commonDataStructures.h"
 
 
 using namespace std;
@@ -15,6 +14,10 @@ public:
         SIZE = 100;
         arr = new T[SIZE];
         ptr = -1;
+    }
+
+    ~Stack() {
+        delete[] arr;
     }
 
     bool isEmpty() {
@@ -85,6 +88,7 @@ string getReversePolish(const string &infix) {
 
     for (int i = 0; i < infix.length(); i++) {
         char token = infix[i];
+        if (isspace(token)) continue;
         if (isdigit(token)) {
             string number;
             while (i < infix.length() && isdigit(infix[i])) {
@@ -95,8 +99,7 @@ string getReversePolish(const string &infix) {
             postfix.append(number);
             postfix.push_back(' ');
         }
-        if (isspace(token)) continue;
-        if (token == '(') {
+        else if (token == '(') {
             stk.push(token);
         }
         else if (token == ')') {
@@ -168,6 +171,7 @@ string getPolishExpression(string infix) {
 
     for (int i = 0; i < infix.length(); i++) {
         char token = infix[i];
+        if (isspace(token)) continue;
         if (isdigit(token)) {
             string number;
             while (i < infix.length() && isdigit(infix[i])) {
@@ -178,8 +182,7 @@ string getPolishExpression(string infix) {
             prefix.append(number);
             prefix.push_back(' ');
         }
-        if (isspace(token)) continue;
-        if (token == ')') {
+        else if (token == ')') {
             stk.push(token);
         }
         else if (token == '(') {
