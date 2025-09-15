@@ -41,7 +41,7 @@ public:
             cout << "Queue is full. Cannot enqueue more elements" << endl;
             return;
         }
-        if (isEmpty()) {
+        if (front == -1) {
             front = 0;
         }
         rear++;
