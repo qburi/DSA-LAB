@@ -23,7 +23,7 @@ void merge(vector<int>& arr, vector<int>& leftArray, vector<int>& rightArray) {
         arr[i++] = leftArray[l++];
     }
     while (r < rightArray.size()) {
-        arr[i++] - rightArray[r++];
+        arr[i++] = rightArray[r++];
     }
 }
 
