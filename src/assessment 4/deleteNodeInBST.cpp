@@ -56,7 +56,6 @@ int main() {
     }
 
     cin >> r;
-
     for (int i = 0; i < r; ++i) {
         cin >> val;
         bool foundNode = false;
@@ -65,9 +64,15 @@ int main() {
             cout << "No such element is in the tree" << endl;
         }
     }
-
     preorder(root);
     cout << endl;
 
     return 0;
 }
+
+/*
+5
+50 30 70 60 80
+3
+3 30 29
+*/
