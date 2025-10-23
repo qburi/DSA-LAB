@@ -32,5 +32,9 @@ cmake_install.cmake
 Debug/
 Release/
 
-
+# ignore jetbrains directory
 .idea/
+
+
+# ignore testFile.cpp
+testFile.cpp
