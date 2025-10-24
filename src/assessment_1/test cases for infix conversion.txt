@@ -23,3 +23,23 @@ Infix: (3 + 4 * 2) / 11 - (2 ^ 3 + 2) * 3
 Postfix: 3 4 2 * + 11 / 2 3 ^ 2 + 3 * -
 Prefix: - / + 3 * 4 2 11 * + ^ 2 3 2 3
 Answer: -29
+
+
+int main() {
+    vector<string> infixArray{
+        "(5 + 3) * 2 - (8 / 4) ^ 2", "1 + 2 ^ 3 ^ 2 * 5", "20 * 3 / 2 * 5 / 10", "((10 + 2) * (1 + 3)) / (2 ^ (1 + 2))",
+        "(3 + 4 * 2) / 11 - (2 ^ 3 + 2) * 3"
+    };
+    for (string infix: infixArray) {
+        string postfix = getReversePolishExpression(infix);
+        double postfixResult = evaluateReversePolish(postfix);
+        cout << "Postfix: " << postfix << endl;
+        cout << "Postfix result: " << postfixResult << endl;
+
+        string prefix = getPolishExpression(infix);
+        double prefixResult = evaulatePolishExpression(prefix);
+        cout << "Prefix: " << prefix << endl;
+        cout << "Prefix result: " << prefixResult << endl;
+    }
+    return 0;
+}
