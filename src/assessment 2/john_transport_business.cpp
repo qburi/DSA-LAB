@@ -99,3 +99,9 @@ int main() {
     delete[] arr;
     return 0;
 }
+
+/**
+    test case 1: 7 5 11 22 33 44 55
+    test case 2: 5 8 2 4 3 5 6 1 10 12
+    test case 3: 4 9 10 20 30 40 55 60 77 80 99
+ */
