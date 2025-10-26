@@ -146,7 +146,7 @@ public:
 int main() {
     int n ;
     cin >> n;
-    int m; // no of patieents
+    int m; // no of patients
     cin >> m;
     if (n <= 1 && m <= 1) {
         cout << -1 << endl;
